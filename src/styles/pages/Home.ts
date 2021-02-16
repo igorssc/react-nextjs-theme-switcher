@@ -20,4 +20,10 @@ export const Container = styled.div`
     font-size: 24px;
     line-height: 32px;
   }
+
+  svg {
+    width: 250px;
+    height: initial;
+    filter: invert(100%);
+  }
 `
