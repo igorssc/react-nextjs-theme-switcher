@@ -1,55 +1,74 @@
-import React from 'react'
-import Document, {
-  DocumentInitialProps,
-  DocumentContext,
+import * as React from 'react'
+import NextDocument, {
   Html,
   Head,
   Main,
-  NextScript
+  NextScript,
+  DocumentContext
 } from 'next/document'
-import { ServerStyleSheet } from 'styled-components'
 
-export default class MyDocument extends Document {
-  static async getInitialProps(
-    ctx: DocumentContext
-  ): Promise<DocumentInitialProps> {
-    const sheet = new ServerStyleSheet()
-    const originalRenderPage = ctx.renderPage
-
-    try {
-      ctx.renderPage = () =>
-        originalRenderPage({
-          enhanceApp: App => props => sheet.collectStyles(<App {...props} />)
-        })
-
-      const initialProps = await Document.getInitialProps(ctx)
-      return {
-        ...initialProps,
-        styles: (
-          <>
-            {initialProps.styles}
-            {sheet.getStyleElement()}
-          </>
-        )
-      }
-    } finally {
-      sheet.seal()
-    }
+class Document extends NextDocument {
+  static async getInitialProps(context: DocumentContext) {
+    const initialProps = await NextDocument.getInitialProps(context)
+    return { ...initialProps }
   }
 
-  render(): JSX.Element {
+  render() {
     return (
-      <Html lang="pt">
+      <Html lang="pt-br">
         <Head>
           <meta charSet="utf-8" />
-          <link rel="icon" href="favicon.ico" />
-
+          <link rel="icon" href="/favicon.ico" />
+          <meta
+            name="viewport"
+            content="initial-scale=1.0, width=device-width"
+          />
           <link
-            href="https://fonts.googleapis.com/css?family=Roboto:400,500,700"
+            href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;800&display=swap"
             rel="stylesheet"
           />
         </Head>
-        <body>
+        <body className="min-h-screen">
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                (function() {
+                  let storageKey = 'darkMode';
+                  let classNameDark = 'dark-mode';
+                  let classNameLight = 'light-mode';
+
+                  function setClassOnDocumentBody(darkMode) {
+                    document.body.classList.add(darkMode ? classNameDark : classNameLight);
+                    document.body.classList.remove(darkMode ? classNameLight : classNameDark);
+                  }
+
+                  let preferDarkQuery = '(prefers-color-scheme: dark)';
+                  let mql = window.matchMedia(preferDarkQuery);
+                  let supportsColorSchemeQuery = mql.media === preferDarkQuery;
+                  let localStorageTheme = null;
+
+                  try {
+                    localStorageTheme = localStorage.getItem(storageKey);
+                  } catch (err) {}
+
+                  var localStorageExists = localStorageTheme !== null;
+                  if (localStorageExists) {
+                    localStorageTheme = JSON.parse(localStorageTheme);
+                  }
+
+                  if (localStorageExists) {
+                    setClassOnDocumentBody(localStorageTheme);
+                  } else if (supportsColorSchemeQuery) {
+                    setClassOnDocumentBody(mql.matches);
+                    localStorage.setItem(storageKey, mql.matches);
+                  } else {
+                    var isDarkMode = document.body.classList.contains(classNameDark);
+                    localStorage.setItem(storageKey, JSON.stringify(isDarkMode));
+                  }
+                })();
+              `
+            }}
+          />
           <Main />
           <NextScript />
         </body>
@@ -57,3 +76,5 @@ export default class MyDocument extends Document {
     )
   }
 }
+
+export default Document

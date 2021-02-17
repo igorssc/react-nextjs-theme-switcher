@@ -1,21 +1,33 @@
-import React from 'react'
-import Head from 'next/head'
-import { Container } from '../styles/pages/Home'
-import Logo from '../assets/next-js.svg'
+import * as React from 'react'
+import { NextPage } from 'next'
+import Layout from '@components/layout/Layout'
+import Link from 'next/link'
+import { FiArrowRight } from 'react-icons/fi'
 
-const Home: React.FC = () => {
+const IndexPage: NextPage = () => {
   return (
-    <Container>
-      <Head>
-        <title>Homepage</title>
-      </Head>
-
-      <Logo />
-
-      <h1>ReactJS Structure</h1>
-      <p>A ReactJS + Next.js structure made by Igor Santos.</p>
-    </Container>
+    <Layout title="My Project" className="container py-8 max-w-xl">
+      <h1 className="dark:text-gray-100 text-3xl font-black mb-4">Welcome</h1>
+      <p className="mb-4 font-light text-lg">
+        This is an template project using NextJS with TailwindCSS including dark
+        mode switcher.
+      </p>
+      <p className="mb-6 font-light text-lg">
+        It includes some example components with jest testing and typography but
+        it's not complete nor is it tested well.
+      </p>
+      <div className="space-x-4">
+        <Link href={'./components'}>
+          <a
+            className="bg-primary hover:bg-primary-darker text-white px-4 py-2"
+            title="components"
+          >
+            Components <FiArrowRight className="inline ml-1" />
+          </a>
+        </Link>
+      </div>
+    </Layout>
   )
 }
 
-export default Home
+export default IndexPage

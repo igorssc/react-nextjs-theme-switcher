@@ -1,17 +1,17 @@
-import React from 'react'
+import * as React from 'react'
+import Router from 'next/router'
 import { AppProps } from 'next/app'
-import { ThemeProvider } from 'styled-components'
+import NProgress from 'nprogress'
 
-import GlobalStyle from '../styles/global'
-import theme from '../styles/theme'
+import '@styles/main.css'
+import '@styles/nprogress.css'
 
-const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
-  return (
-    <ThemeProvider theme={theme}>
-      <Component {...pageProps} />
-      <GlobalStyle />
-    </ThemeProvider>
-  )
+Router.events.on('routeChangeStart', () => NProgress.start())
+Router.events.on('routeChangeComplete', () => NProgress.done())
+Router.events.on('routeChangeError', () => NProgress.done())
+
+const App: React.FC<AppProps> = ({ Component, pageProps }) => {
+  return <Component {...pageProps} />
 }
 
-export default MyApp
+export default App
